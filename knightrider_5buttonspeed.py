@@ -22,7 +22,7 @@ while True:
     try:
         pins[pos].on()
         currentstav = button.value()
-        if currentstav == 1 and lastState == 0 and speed>= 2000:
+        if currentstav == 1 and lastState == 0 and speed<= 2000:
             speed +=100
             print(speed)
         lastState = currentstav
@@ -50,4 +50,5 @@ while True:
                 buzzer.off()
             print("Konec")
             break
+
         
