@@ -1,0 +1,49 @@
+from machine import Pin
+from utime import sleep
+
+# --- Nastavení pinů ---
+leds = [Pin(i, Pin.OUT) for i in range(4)]
+button_left = Pin(12, Pin.IN, Pin.PULL_DOWN)
+button_horn = Pin(13, Pin.IN, Pin.PULL_DOWN)
+button_right = Pin(14, Pin.IN, Pin.PULL_DOWN)
+buzzer = Pin(16, Pin.OUT)
+
+# --- Funkce pro animace ---
+def blink(direction='left'):
+    for _ in range(3):  # zopakuj animaci 3x
+        if direction == 'left':
+            seq = range(4)          # 0 -> 3
+        else:
+            seq = reversed(range(4))  # 3 -> 0
+        # rozsvícení postupně všech 4 LED
+        for i in seq:
+            leds[i].on()
+            sleep(0.1)
+        sleep(0.5)
+        # všechny zhasnou
+        for i in range(4):
+            leds[i].off()
+        sleep(0.5)
+
+def horn():
+    # všechny LED svítí a houká
+    for i in range(4):
+        leds[i].on()
+    buzzer.on()
+    # drží, dokud se tlačítko drží
+    while button_horn.value() == 1:
+        sleep(0.05)
+    buzzer.off()
+    for i in range(4):
+        leds[i].off()
+
+# --- Hlavní smyčka ---
+while True:
+    if button_left.value() == 1:
+        blink('left')
+    elif button_right.value() == 1:
+        blink('right')
+    elif button_horn.value() == 1:
+        horn()
+    sleep(0.1)  # malá prodleva pro stabilitu smyčky
+    
